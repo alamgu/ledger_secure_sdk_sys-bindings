@@ -299,6 +299,16 @@ pub const CX_SHA224_SIZE: u32 = 28;
 pub const CX_SHA256_SIZE: u32 = 32;
 pub const CX_SHA384_SIZE: u32 = 48;
 pub const CX_SHA512_SIZE: u32 = 64;
+pub const CX_SHA3_224_SIZE: u32 = 28;
+pub const CX_SHA3_256_SIZE: u32 = 32;
+pub const CX_SHA3_384_SIZE: u32 = 48;
+pub const CX_SHA3_512_SIZE: u32 = 64;
+pub const CX_KECCAK_224_SIZE: u32 = 28;
+pub const CX_KECCAK_256_SIZE: u32 = 32;
+pub const CX_KECCAK_384_SIZE: u32 = 48;
+pub const CX_KECCAK_512_SIZE: u32 = 64;
+pub const CX_BLAKE2B_256_SIZE: u32 = 32;
+pub const CX_BLAKE2B_512_SIZE: u32 = 64;
 pub const CX_DES_KEY_LENGTH: u32 = 64;
 pub const CX_3DES_2_KEY_LENGTH: u32 = 128;
 pub const CX_3DES_3_KEY_LENGTH: u32 = 192;
@@ -5083,6 +5093,56 @@ extern "C" {
     pub fn cx_trng_init();
 }
 pub type uint64bits_t = u64;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct cx_iovec_t {
+    pub iov_base: *const u8,
+    pub iov_len: usize,
+}
+#[test]
+fn bindgen_test_layout_cx_iovec_t() {
+    const UNINIT: ::core::mem::MaybeUninit<cx_iovec_t> = ::core::mem::MaybeUninit::uninit();
+    let ptr = UNINIT.as_ptr();
+    assert_eq!(
+        ::core::mem::size_of::<cx_iovec_t>(),
+        8usize,
+        concat!("Size of: ", stringify!(cx_iovec_t))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<cx_iovec_t>(),
+        4usize,
+        concat!("Alignment of ", stringify!(cx_iovec_t))
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).iov_base) as usize - ptr as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(cx_iovec_t),
+            "::",
+            stringify!(iov_base)
+        )
+    );
+    assert_eq!(
+        unsafe { ::core::ptr::addr_of!((*ptr).iov_len) as usize - ptr as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(cx_iovec_t),
+            "::",
+            stringify!(iov_len)
+        )
+    );
+}
+impl Default for cx_iovec_t {
+    fn default() -> Self {
+        let mut s = ::core::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::core::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
 pub const ERR_GEN_ID_01: generic_identifiers = 1;
 pub const ERR_GEN_ID_02: generic_identifiers = 2;
 pub const ERR_GEN_ID_03: generic_identifiers = 3;
@@ -5539,6 +5599,13 @@ extern "C" {
     pub fn cx_ripemd160_init_no_throw(hash: *mut cx_ripemd160_t) -> cx_err_t;
 }
 extern "C" {
+    pub fn cx_ripemd160_hash_iovec(
+        iovec: *const cx_iovec_t,
+        iovec_len: usize,
+        digest: *mut u8,
+    ) -> cx_err_t;
+}
+extern "C" {
     pub fn cx_hash_ripemd160(in_: *const u8, in_len: usize, out: *mut u8, out_len: usize) -> usize;
 }
 #[repr(C)]
@@ -5618,7 +5685,21 @@ extern "C" {
     pub fn cx_sha224_init_no_throw(hash: *mut cx_sha256_t) -> cx_err_t;
 }
 extern "C" {
+    pub fn cx_sha224_hash_iovec(
+        iovec: *const cx_iovec_t,
+        iovec_len: usize,
+        digest: *mut u8,
+    ) -> cx_err_t;
+}
+extern "C" {
     pub fn cx_sha256_init_no_throw(hash: *mut cx_sha256_t) -> cx_err_t;
+}
+extern "C" {
+    pub fn cx_sha256_hash_iovec(
+        iovec: *const cx_iovec_t,
+        iovec_len: usize,
+        digest: *mut u8,
+    ) -> cx_err_t;
 }
 extern "C" {
     pub fn cx_hash_sha256(in_: *const u8, len: usize, out: *mut u8, out_len: usize) -> usize;
@@ -5700,7 +5781,21 @@ extern "C" {
     pub fn cx_sha384_init_no_throw(hash: *mut cx_sha512_t) -> cx_err_t;
 }
 extern "C" {
+    pub fn cx_sha384_hash_iovec(
+        iovec: *const cx_iovec_t,
+        iovec_len: usize,
+        digest: *mut u8,
+    ) -> cx_err_t;
+}
+extern "C" {
     pub fn cx_sha512_init_no_throw(hash: *mut cx_sha512_t) -> cx_err_t;
+}
+extern "C" {
+    pub fn cx_sha512_hash_iovec(
+        iovec: *const cx_iovec_t,
+        iovec_len: usize,
+        digest: *mut u8,
+    ) -> cx_err_t;
 }
 extern "C" {
     pub fn cx_hash_sha512(in_: *const u8, in_len: usize, out: *mut u8, out_len: usize) -> usize;
@@ -5804,13 +5899,85 @@ extern "C" {
     pub fn cx_sha3_init_no_throw(hash: *mut cx_sha3_t, size: usize) -> cx_err_t;
 }
 extern "C" {
+    pub fn cx_sha3_224_hash_iovec(
+        iovec: *const cx_iovec_t,
+        iovec_len: usize,
+        digest: *mut u8,
+    ) -> cx_err_t;
+}
+extern "C" {
+    pub fn cx_sha3_256_hash_iovec(
+        iovec: *const cx_iovec_t,
+        iovec_len: usize,
+        digest: *mut u8,
+    ) -> cx_err_t;
+}
+extern "C" {
+    pub fn cx_sha3_384_hash_iovec(
+        iovec: *const cx_iovec_t,
+        iovec_len: usize,
+        digest: *mut u8,
+    ) -> cx_err_t;
+}
+extern "C" {
+    pub fn cx_sha3_512_hash_iovec(
+        iovec: *const cx_iovec_t,
+        iovec_len: usize,
+        digest: *mut u8,
+    ) -> cx_err_t;
+}
+extern "C" {
     pub fn cx_keccak_init_no_throw(hash: *mut cx_sha3_t, size: usize) -> cx_err_t;
+}
+extern "C" {
+    pub fn cx_keccak_224_hash_iovec(
+        iovec: *const cx_iovec_t,
+        iovec_len: usize,
+        digest: *mut u8,
+    ) -> cx_err_t;
+}
+extern "C" {
+    pub fn cx_keccak_256_hash_iovec(
+        iovec: *const cx_iovec_t,
+        iovec_len: usize,
+        digest: *mut u8,
+    ) -> cx_err_t;
+}
+extern "C" {
+    pub fn cx_keccak_384_hash_iovec(
+        iovec: *const cx_iovec_t,
+        iovec_len: usize,
+        digest: *mut u8,
+    ) -> cx_err_t;
+}
+extern "C" {
+    pub fn cx_keccak_512_hash_iovec(
+        iovec: *const cx_iovec_t,
+        iovec_len: usize,
+        digest: *mut u8,
+    ) -> cx_err_t;
 }
 extern "C" {
     pub fn cx_shake128_init_no_throw(hash: *mut cx_sha3_t, out_size: usize) -> cx_err_t;
 }
 extern "C" {
+    pub fn cx_shake128_hash_iovec(
+        iovec: *const cx_iovec_t,
+        iovec_len: usize,
+        digest: *mut u8,
+        out_length: usize,
+    ) -> cx_err_t;
+}
+extern "C" {
     pub fn cx_shake256_init_no_throw(hash: *mut cx_sha3_t, out_size: usize) -> cx_err_t;
+}
+extern "C" {
+    pub fn cx_shake256_hash_iovec(
+        iovec: *const cx_iovec_t,
+        iovec_len: usize,
+        digest: *mut u8,
+        out_length: usize,
+    ) -> cx_err_t;
 }
 extern "C" {
     pub fn cx_sha3_xof_init_no_throw(
@@ -5995,6 +6162,20 @@ impl Default for cx_blake2b_s {
 pub type cx_blake2b_t = cx_blake2b_s;
 extern "C" {
     pub fn cx_blake2b_init_no_throw(hash: *mut cx_blake2b_t, out_len: usize) -> cx_err_t;
+}
+extern "C" {
+    pub fn cx_blake2b_256_hash_iovec(
+        iovec: *const cx_iovec_t,
+        iovec_len: usize,
+        digest: *mut u8,
+    ) -> cx_err_t;
+}
+extern "C" {
+    pub fn cx_blake2b_512_hash_iovec(
+        iovec: *const cx_iovec_t,
+        iovec_len: usize,
+        digest: *mut u8,
+    ) -> cx_err_t;
 }
 extern "C" {
     pub fn cx_blake2b_init2_no_throw(
