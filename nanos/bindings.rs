@@ -310,6 +310,7 @@ pub const CX_DES_KEY_LENGTH: u32 = 64;
 pub const CX_3DES_2_KEY_LENGTH: u32 = 128;
 pub const CX_3DES_3_KEY_LENGTH: u32 = 192;
 pub const CX_CRC16_INIT: u32 = 65535;
+pub const CX_CRC32_INIT: u32 = 4294967295;
 pub const ENDORSEMENT_MAX_ASN1_LENGTH: u32 = 72;
 pub const BOLOS_TRUE: u32 = 170;
 pub const BOLOS_FALSE: u32 = 85;
@@ -333,7 +334,8 @@ pub const IO_RECEIVE_DATA: u32 = 64;
 pub const IO_RETURN_AFTER_TX: u32 = 32;
 pub const IO_ASYNCH_REPLY: u32 = 16;
 pub const IO_FINISHED: u32 = 8;
-pub const IO_FLAGS: u32 = 248;
+pub const IO_CONTINUE_RX: u32 = 4;
+pub const IO_FLAGS: u32 = 252;
 pub const BLE_SEGMENT_SIZE: u32 = 64;
 pub const NVM_ERASED_WORD_VALUE: u32 = 4294967295;
 pub const DEFAULT_PIN_RETRIES: u32 = 3;
@@ -3840,7 +3842,7 @@ pub type cx_err_t = u32;
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct cx_aes_key_s {
-    pub size: usize,
+    pub size: u32,
     pub keys: [u8; 32usize],
 }
 #[test]
@@ -7730,6 +7732,12 @@ extern "C" {
 }
 extern "C" {
     pub fn cx_crc16_update(crc: u16, buffer: *const ::core::ffi::c_void, len: usize) -> u16;
+}
+extern "C" {
+    pub fn cx_crc32(buf: *const ::core::ffi::c_void, len: usize) -> u32;
+}
+extern "C" {
+    pub fn cx_crc32_update(crc_state: u32, buf: *const ::core::ffi::c_void, len: usize) -> u32;
 }
 extern "C" {
     pub fn os_endorsement_get_code_hash(buffer: *mut ::core::ffi::c_uchar) -> ::core::ffi::c_uint;

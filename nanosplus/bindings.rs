@@ -319,6 +319,7 @@ pub const AES_SIV_MAX_KEY_LEN: u32 = 32;
 pub const AES_SIV_KEY_NUMBER: u32 = 2;
 pub const AES_SIV_TAG_LEN: u32 = 16;
 pub const CX_CRC16_INIT: u32 = 65535;
+pub const CX_CRC32_INIT: u32 = 4294967295;
 pub const ENDORSEMENT_MAX_ASN1_LENGTH: u32 = 72;
 pub const BOLOS_TRUE: u32 = 170;
 pub const BOLOS_FALSE: u32 = 85;
@@ -552,7 +553,8 @@ pub const SEPROXYHAL_TAG_SESSION_START_EVENT_FEATURE_NO_SCREEN: u32 = 0;
 pub const SEPROXYHAL_TAG_SESSION_START_EVENT_FEATURE_SCREEN_BIG: u32 = 256;
 pub const SEPROXYHAL_TAG_SESSION_START_EVENT_FEATURE_SCREEN_SML: u32 = 512;
 pub const SEPROXYHAL_TAG_SESSION_START_EVENT_FEATURE_SCREEN_SSD1312: u32 = 768;
-pub const SEPROXYHAL_TAG_SESSION_START_EVENT_FEATURE_LEDRGB: u32 = 4096;
+pub const SEPROXYHAL_TAG_SESSION_START_EVENT_FEATURE_HW_VERSION_MASK: u32 = 61440;
+pub const SEPROXYHAL_TAG_SESSION_START_EVENT_FEATURE_HW_VERSION_POS: u32 = 12;
 pub const SEPROXYHAL_TAG_SESSION_START_EVENT_FEATURE_BATTERY: u32 = 8;
 pub const SEPROXYHAL_TAG_SESSION_START_EVENT_FEATURE_ISET_MASK: u32 = 4026531840;
 pub const SEPROXYHAL_TAG_SESSION_START_EVENT_FEATURE_ISET_BASIC: u32 = 0;
@@ -3841,7 +3843,7 @@ pub type cx_err_t = u32;
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct cx_aes_key_s {
-    pub size: usize,
+    pub size: u32,
     pub keys: [u8; 32usize],
 }
 #[test]
@@ -6722,8 +6724,8 @@ pub type cx_cipher_id_t = ::core::ffi::c_uchar;
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct cipher_key_t {
-    pub size: ::core::ffi::c_uint,
-    pub keys: [::core::ffi::c_uchar; 32usize],
+    pub size: u32,
+    pub keys: [u8; 32usize],
 }
 #[test]
 fn bindgen_test_layout_cipher_key_t() {
@@ -8499,6 +8501,12 @@ extern "C" {
 }
 extern "C" {
     pub fn cx_crc16_update(crc: u16, buffer: *const ::core::ffi::c_void, len: usize) -> u16;
+}
+extern "C" {
+    pub fn cx_crc32(buf: *const ::core::ffi::c_void, len: usize) -> u32;
+}
+extern "C" {
+    pub fn cx_crc32_update(crc_state: u32, buf: *const ::core::ffi::c_void, len: usize) -> u32;
 }
 extern "C" {
     pub fn os_endorsement_get_code_hash(buffer: *mut ::core::ffi::c_uchar) -> ::core::ffi::c_uint;
